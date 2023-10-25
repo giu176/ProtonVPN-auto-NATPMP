@@ -4,9 +4,9 @@ Periodically request port opening to Proton's P2P-optimized servers even without
 Citing the [ProtonVPN website](https://protonvpn.com/support/port-forwarding/):
 > "Port forwarding is currently available in our Windows app for everyone with a paid Proton VPN plan. " 
 
-So if you have manually configured a tunnel on your machine you need to manually enable port forwarding as explained in the [official documentation](https://protonvpn.com/support/port-forwarding-manual-setup/). Port forwarding on routers can be acheived in the same way from a linux machine inside the network if its traffic is routed through the tunnel.
+So if you have manually configured a tunnel on your machine you need to manually enable port forwarding as explained in the [official documentation](https://protonvpn.com/support/port-forwarding-manual-setup/). Port forwarding for tunnels created on a router can be acheived in the same way running the `natpmpc` command from a linux machine inside the network if its traffic is routed through the tunnel.
 
-This script provides an automatic way to enable this feature in all unsupported devices and can be customized to parse the opened port number to software of your choice, for example [qbittorrent-nox](https://github.com/qbittorrent/qBittorrent/wiki/Running-qBittorrent-without-X-server-(WebUI-only,-systemd-service-set-up,-Ubuntu-15.04-or-newer)) (qbittorrent-nox configuration below).
+This script provides an automatic way to enable this feature in unsupported devices and can be customized to pass the number of the opened port to software of your choice, for example [qbittorrent-nox](https://github.com/qbittorrent/qBittorrent/wiki/Running-qBittorrent-without-X-server-(WebUI-only,-systemd-service-set-up,-Ubuntu-15.04-or-newer)) (qbittorrent-nox configuration below).
 ## Before running the script
 
 The script was tested on a P2P application running on debian 12 connected to a MiktorTikOS VM that routes all the trafffic through a ProtonVPN server. Before you use the script you need to manually configure your device following [Step 1 in Proton VPN official guide](https://protonvpn.com/support/port-forwarding-manual-setup/). It's also recommended to try Step 2 from the same guide to test the command `natpmpc` as the script will use the same code from this guide.
@@ -31,6 +31,7 @@ Now you are ready to launch the script:
 ./natpmpc_script.sh
 ```
 This will enable port forwarding on the ProtonVPN server, a random port will be assigned. The port will be closed 60 seconds after you close the script with `ctrl+C`.
+
 Output:
 ```sh
 initnatpmp() returned 0 (SUCCESS)
@@ -48,7 +49,7 @@ Opened port: 65152
 ```
 The Public IP address `X.X.X.X` must be your VPN endpoint, if not there is a problem in your ProtonVPN configuration or network setup and the machine is not using the VPN tunnel.
 
-The script will print the output of `natpmpc` alongside with the opened port. You can see the log of the latest output in ` ./natpmpc_output`.
+The script will print the output of `natpmpc` alongside with the opened port. You can see the log of the latest output in ` /tmp/natpmpc_output`.
 
 Now you can use the opened port in your P2P application. 
 
@@ -60,7 +61,7 @@ Create a new file, `/etc/systemd/system/natpmpc_script.service`, and edit it wit
 sudo nano /etc/systemd/system/natpmpc_script.service
 ```
 
-Save the file with the following content. You may modify the service as-needed to better suit your configuration, change `YOURUSER` with the name of the user controlling the script and check if `ExecStart` is the correct path to the script.
+Save the file with the following content. You may modify the service as-needed to better suit your configuration, change `YOURUSER` with the name of the user and check if `ExecStart` is the correct path to the script.
 ```
 [Unit]
 Description=Custom Script for NAT-PMP Control
@@ -103,8 +104,8 @@ If the port is OPEN on the VPN endpoint you are done! Otherwise you can wait a m
 
 ## Customize the script
 If you followed the Installation paragraph you have installed a basic version of the script that is basically a copy-paste of the loop in the from the official ProtonVPN guide with the exception that now it will run automatically in the background at the server startup. 
-While in operation you should receive the same opened port at any renewal but stopping the service (or the script) and performing any other action that will lead to a shut down of the VPN tunnel will also interrupt the port forwarding. ProtonVPN doesn't assign a port to a user (by design) so after a new `natpmpc` request you will receive a new port number.
-If you have access to a configuration file for your P2P application it's higly recommended to automatically update the listening port of the application.
+While in operation you should receive the same opened port at any renewal but stopping the service (or the script) and performing any other action that will lead to a shut down of the VPN tunnel will also interrupt the port forwarding. ProtonVPN doesn't assign a port to a user (by design) so after an interruption a new `natpmpc` request will give you a new port number.
+If you have access to a configuration file for your P2P application it will be useful to automatically update the listening port of the application.
 
 ### qBittorrent integration
 A useful application of the script is to dynamically change the listening port of [qbittorrent-nox](https://github.com/qbittorrent/qBittorrent/wiki/Running-qBittorrent-without-X-server-(WebUI-only,-systemd-service-set-up,-Ubuntu-15.04-or-newer)). 
@@ -126,7 +127,7 @@ Access the script with an editor of your choice, for example:
 ```cmd
 sudo nano /home/YOURUSER/natpmpc_script.sh
 ```
-And change the integration with an application if possible, the value of the opened port is stored in the variable `port`.
+And change the integration with an application if possible, the value of the opened port is stored in the variable `$port`.
 An example is the qbittorrent-nox integration, `natpmpc_script_qbittorrent.sh` content is:
 ```sh
 #!/bin/bash
