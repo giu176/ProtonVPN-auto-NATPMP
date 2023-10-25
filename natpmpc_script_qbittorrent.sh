@@ -17,7 +17,7 @@ while true; do
     # Get the current --torrenting-port from the service file
     current_port=$(grep -Po --max-count=1 '(?<=--torrenting-port=)[0-9]+' "$service_file")
 
-    # Check if the current_port is different from the $port
+    # Check if $current_port is different from $port
     if [ "$current_port" != "$port" ]; then
         # Stop the qbittorrent-nox service
         service qbittorrent-nox stop
