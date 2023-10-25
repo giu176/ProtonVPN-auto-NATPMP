@@ -11,8 +11,5 @@ while true; do
     port=$(grep 'TCP' /tmp/natpmpc_output | grep -o 'Mapped public port [0-9]*' | awk '{print $4}')
 
     echo "Opened port: $port"
-    # Get the current --torrenting-port from the service file
-    current_port=$(grep -Po --max-count=1 '(?<=--torrenting-port=)[0-9]+' "$service_file")
-
     sleep 45
 done
