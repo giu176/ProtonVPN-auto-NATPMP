@@ -4,7 +4,7 @@ Periodically request port opening to Proton's P2P-optimized servers even without
 Citing the [ProtonVPN website](https://protonvpn.com/support/port-forwarding/):
 > "Port forwarding is currently available in our Windows app for everyone with a paid Proton VPN plan. " 
 
-So if you have manually configured a tunnel on your machine you need to manually enable port forwarding as explained in the [official documentation](https://protonvpn.com/support/port-forwarding-manual-setup/). Port forwarding for tunnels created on a router can be acheived in the same way running the `natpmpc` command from a linux machine inside the network if its traffic is routed through the tunnel.
+So if you have manually configured a tunnel on your machine (or you are using Linux) you need to manually enable port forwarding as explained in the [official documentation](https://protonvpn.com/support/port-forwarding-manual-setup/). Port forwarding for tunnels created on a router can be acheived in the same way running the `natpmpc` command from a linux machine inside the network if its traffic is routed through the tunnel.
 
 This script provides an automatic way to enable this feature in unsupported devices and can be customized to pass the number of the opened port to software of your choice, for example [qbittorrent-nox](https://github.com/qbittorrent/qBittorrent/wiki/Running-qBittorrent-without-X-server-(WebUI-only,-systemd-service-set-up,-Ubuntu-15.04-or-newer)) (qbittorrent-nox configuration below).
 ## Before running the script
