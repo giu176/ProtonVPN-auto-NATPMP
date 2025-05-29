@@ -122,6 +122,15 @@ Restart the service:
  ```sh
 sudo systemctl restart natpmpc_script
 ```
+
+> [!IMPORTANT]
+> Make sure your qbittorrent-nox service in `/etc/systemd/system/qbittorrent-nox.service` has a torrenting port configured at start-up, if no port is configured then qBittorrent will keep restarting everytime the script is ran.
+> ```
+> [Service]
+> ExecStart=/usr/bin/qbittorrent-nox --torrenting-port=<PORT>
+> ```
+> To confirm the script will work, the command `grep -Po --max-count=1 '(?<=--torrenting-port=)[0-9]+' "/etc/systemd/system/qbittorrent-nox.service"` should give you an output of the configured torrenting port.
+
 ### Modify the script as needed
 Access the script with an editor of your choice, for example:
 ```cmd
